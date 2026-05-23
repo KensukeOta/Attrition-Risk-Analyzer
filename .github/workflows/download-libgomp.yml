@@ -1,0 +1,30 @@
+name: Download libgomp
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-libgomp:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install libgomp1
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgomp1
+
+      - name: Copy libgomp.so.1
+        run: |
+          mkdir -p native_libs
+          cp /usr/lib/x86_64-linux-gnu/libgomp.so.1 native_libs/libgomp.so.1
+          ls -la native_libs
+          file native_libs/libgomp.so.1
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libgomp
+          path: native_libs/libgomp.so.1
