@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "./layout.css";
 	import favicon from "$lib/assets/favicon.svg";
+	import { page } from "$app/state";
 
 	let { children } = $props();
 
@@ -11,6 +12,14 @@
 		{ href: "/feature-importance", label: "特徴量重要度" },
 		{ href: "/metrics", label: "モデル評価" }
 	];
+
+	function isActive(href: string) {
+		if (href === "/") {
+			return page.url.pathname === "/";
+		}
+
+		return page.url.pathname.startsWith(href);
+	}
 </script>
 
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
@@ -20,9 +29,16 @@
 		<div class="mx-auto flex max-w-7xl items-center justify-between px-4 py-4">
 			<a href="/" class="font-black text-slate-900"> Attrition Risk Analyzer </a>
 
-			<nav class="hidden items-center gap-4 text-sm font-semibold text-slate-600 md:flex">
+			<nav class="hidden items-center gap-2 text-sm font-semibold md:flex">
 				{#each navItems as item}
-					<a href={item.href} class="transition hover:text-blue-600">
+					<a
+						href={item.href}
+						class={`rounded-full px-3 py-2 transition ${
+							isActive(item.href)
+								? "bg-blue-600 text-white"
+								: "text-slate-600 hover:bg-slate-100 hover:text-blue-600"
+						}`}
+					>
 						{item.label}
 					</a>
 				{/each}
