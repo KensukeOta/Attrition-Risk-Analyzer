@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from "$env/static/public";
+	import { toast } from "svelte-sonner";
 	import Spinner from "$lib/components/Spinner/Spinner.svelte";
 
 	let file = $state<File | null>(null);
@@ -42,7 +43,7 @@
 
 	async function uploadCsv() {
 		if (!file) {
-			errorMessage = "CSVファイルを選択してください";
+			toast.error("CSVファイルを選択してください");
 			return;
 		}
 
@@ -78,7 +79,8 @@
 
 			window.URL.revokeObjectURL(url);
 
-			successMessage = "予測結果CSVをダウンロードしました";
+			// 成功toast
+			toast.success("CSVをダウンロードしました");
 		} catch (e) {
 			errorMessage = e instanceof Error ? e.message : "予期しないエラー";
 		} finally {
@@ -151,17 +153,5 @@
 				{/if}
 			</div>
 		</button>
-
-		{#if errorMessage}
-			<p class="mt-4 font-medium text-red-600">
-				{errorMessage}
-			</p>
-		{/if}
-
-		{#if successMessage}
-			<p class="mt-4 font-medium text-green-600">
-				{successMessage}
-			</p>
-		{/if}
 	</div>
 </div>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from "$env/static/public";
+	import { toast } from "svelte-sonner";
 	import Spinner from "$lib/components/Spinner/Spinner.svelte";
 
 	type PredictionResult = {
@@ -321,8 +322,14 @@
 			}
 
 			result = await res.json();
+
+			// 成功toast
+			toast.success("予測が完了しました");
 		} catch (e) {
 			errorMessage = e instanceof Error ? e.message : "予期しないエラーが発生しました";
+
+			// 失敗toast
+			toast.error("予測に失敗しました");
 		} finally {
 			loading = false;
 		}
@@ -417,12 +424,6 @@
 						{/if}
 					</div>
 				</button>
-
-				{#if errorMessage}
-					<p class="mt-3 font-medium text-red-600">
-						{errorMessage}
-					</p>
-				{/if}
 			</div>
 		</form>
 

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import "./layout.css";
 	import favicon from "$lib/assets/favicon.svg";
+	import { Toaster } from "svelte-sonner";
 	import { page } from "$app/state";
 
 	let { children } = $props();
@@ -47,4 +48,5 @@
 	</header>
 
 	{@render children()}
+	<Toaster richColors position="top-center" />
 </div>
