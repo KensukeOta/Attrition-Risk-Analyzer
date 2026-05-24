@@ -46,3 +46,33 @@ class FeatureImportanceItem(BaseModel):
     importance_mean: float
     importance_std: float
     cv: float
+
+
+class TestMetrics(BaseModel):
+    roc_auc: float
+    accuracy: float
+    precision_yes: float
+    recall_yes: float
+    f1_yes: float
+
+
+class ConfusionMatrix(BaseModel):
+    tn: int
+    fp: int
+    fn: int
+    tp: int
+
+
+class ClassDistribution(BaseModel):
+    no: int
+    yes: int
+
+
+class ModelMetricsResponse(BaseModel):
+    model_name: str
+    validation_method: str
+    threshold_strategy: str
+    threshold: float
+    test_metrics: TestMetrics
+    confusion_matrix: ConfusionMatrix
+    class_distribution: ClassDistribution

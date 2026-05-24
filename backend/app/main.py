@@ -1,4 +1,5 @@
 import io
+import json
 
 import pandas as pd
 
@@ -8,7 +9,12 @@ from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
-from .schemas import EmployeeInput, PredictionResponse, FeatureImportanceItem
+from .schemas import (
+    EmployeeInput,
+    PredictionResponse,
+    FeatureImportanceItem,
+    ModelMetricsResponse,
+)
 from .services.predictor import predict_attrition, predict_csv
 from .config import get_settings
 
@@ -58,3 +64,16 @@ def get_feature_importance():
     df = pd.read_csv(path)
 
     return df.to_dict(orient="records")
+
+
+@app.get(
+    "/api/v1/model/metrics",
+    response_model=ModelMetricsResponse,
+)
+def get_model_metrics():
+    path = Path("artifacts/model_metrics.json")
+
+    with path.open("r", encoding="utf-8") as f:
+        metrics = json.load(f)
+
+    return metrics
