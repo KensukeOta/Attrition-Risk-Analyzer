@@ -39,3 +39,10 @@ class PredictionResponse(BaseModel):
     risk_level: str
     threshold: float
     risk_factors: list[str]
+
+
+class FeatureImportanceItem(BaseModel):
+    feature: str
+    importance_mean: float
+    importance_std: float
+    cv: float

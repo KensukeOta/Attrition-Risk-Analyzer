@@ -1,10 +1,14 @@
 import io
 
+import pandas as pd
+
+from pathlib import Path
+
 from fastapi import FastAPI, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 
-from .schemas import EmployeeInput, PredictionResponse
+from .schemas import EmployeeInput, PredictionResponse, FeatureImportanceItem
 from .services.predictor import predict_attrition, predict_csv
 from .config import get_settings
 
@@ -42,3 +46,15 @@ async def predict_csv_route(file: UploadFile = File(...)):
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=prediction_result.csv"},
     )
+
+
+@app.get(
+    "/api/v1/model/feature-importance",
+    response_model=list[FeatureImportanceItem],
+)
+def get_feature_importance():
+    path = Path("artifacts/feature_importance.csv")
+
+    df = pd.read_csv(path)
+
+    return df.to_dict(orient="records")
