@@ -5,6 +5,39 @@
 	let loading = $state(false);
 	let errorMessage = $state("");
 	let successMessage = $state("");
+	let isDragging = $state(false);
+
+	function setFile(f: File | null) {
+		if (!f) return;
+
+		if (!f.name.endsWith(".csv")) {
+			errorMessage = "CSVファイルを選択してください";
+			return;
+		}
+
+		file = f;
+		errorMessage = "";
+		successMessage = "";
+	}
+
+	function handleDragOver(e: DragEvent) {
+		e.preventDefault();
+		isDragging = true;
+	}
+
+	function handleDragLeave(e: DragEvent) {
+		e.preventDefault();
+		isDragging = false;
+	}
+
+	function handleDrop(e: DragEvent) {
+		e.preventDefault();
+		isDragging = false;
+
+		const dropped = e.dataTransfer?.files?.[0] ?? null;
+
+		setFile(dropped);
+	}
 
 	async function uploadCsv() {
 		if (!file) {
@@ -72,22 +105,35 @@
 
 	<div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-lg">
 		<label
-			class="block rounded-2xl border-2 border-dashed border-slate-300 p-6 text-center transition hover:border-blue-400"
+			class={`block cursor-pointer rounded-3xl border-2 border-dashed p-8 text-center transition
+			${isDragging ? "border-blue-500 bg-blue-50" : "border-slate-300 hover:border-blue-400"}`}
+			ondragenter={handleDragOver}
+			ondragover={handleDragOver}
+			ondragleave={handleDragLeave}
+			ondrop={handleDrop}
 		>
 			<input
 				type="file"
 				accept=".csv"
 				class="hidden"
 				onchange={(e) => {
-					file = (e.currentTarget as HTMLInputElement).files?.[0] ?? null;
+					setFile((e.currentTarget as HTMLInputElement).files?.[0] ?? null);
 				}}
 			/>
 
-			<p class="font-medium text-slate-700">CSVファイルを選択</p>
+			<div class="space-y-2">
+				<p class="text-lg font-semibold text-slate-700">CSVファイルをドラッグ＆ドロップ</p>
 
-			<p class="mt-1 text-sm text-slate-500">
-				{file ? file.name : "クリックしてCSVを選択"}
-			</p>
+				<p class="text-sm text-slate-500">またはクリックして選択</p>
+
+				{#if file}
+					<div
+						class="mt-4 inline-flex rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-700"
+					>
+						{file.name}
+					</div>
+				{/if}
+			</div>
 		</label>
 
 		<button
