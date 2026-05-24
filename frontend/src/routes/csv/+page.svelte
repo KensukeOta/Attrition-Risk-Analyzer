@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from "$env/static/public";
+	import Spinner from "$lib/components/Spinner/Spinner.svelte";
 
 	let file = $state<File | null>(null);
 	let loading = $state(false);
@@ -141,7 +142,14 @@
 			disabled={loading}
 			class="mt-6 w-full rounded-2xl bg-blue-600 px-4 py-3 font-semibold text-white transition hover:bg-blue-700 disabled:bg-slate-400"
 		>
-			{loading ? "予測中..." : "CSV一括予測"}
+			<div class="flex items-center justify-center gap-2">
+				{#if loading}
+					<Spinner />
+					<span>予測中...</span>
+				{:else}
+					<span>CSV一括予測</span>
+				{/if}
+			</div>
 		</button>
 
 		{#if errorMessage}
