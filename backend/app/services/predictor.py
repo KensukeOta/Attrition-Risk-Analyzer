@@ -1,5 +1,6 @@
 from pathlib import Path
 
+import io
 import joblib
 import pandas as pd
 
@@ -72,3 +73,40 @@ def predict_attrition(data: EmployeeInput) -> dict:
         "threshold": round(float(threshold), 2),
         "risk_factors": build_risk_factors(data),
     }
+
+
+def predict_csv(file_bytes: bytes) -> bytes:
+    df = pd.read_csv(io.BytesIO(file_bytes))
+
+    for col in categorical_features:
+        if col in df.columns:
+            df[col] = df[col].astype("category")
+
+    df = df.drop(columns=drop_cols, errors="ignore")
+
+    yes_idx = list(model.classes_).index("Yes")
+
+    proba = model.predict_proba(df)[:, yes_idx]
+
+    pred = ["Yes" if p >= threshold else "No" for p in proba]
+
+    risk_level = []
+
+    for p in proba:
+        if p >= 0.15:
+            risk_level.append("High")
+        elif p >= threshold:
+            risk_level.append("Middle")
+        else:
+            risk_level.append("Low")
+
+    df["attrition_probability"] = proba.round(3)
+
+    df["prediction"] = pred
+    df["risk_level"] = risk_level
+
+    output = io.StringIO()
+
+    df.to_csv(output, index=False)
+
+    return output.getvalue().encode("utf-8")
