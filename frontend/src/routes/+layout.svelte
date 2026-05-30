@@ -1,6 +1,5 @@
 <script lang="ts">
 	import "./layout.css";
-	import favicon from "$lib/assets/favicon.svg";
 	import { Toaster } from "svelte-sonner";
 	import { page } from "$app/state";
 
@@ -23,7 +22,33 @@
 	}
 </script>
 
-<svelte:head><link rel="icon" href={favicon} /></svelte:head>
+<svelte:head>
+	<link rel="icon" href="/favicon.png" />
+
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="Attrition Risk Analyzer" />
+	<meta property="og:title" content="Attrition Risk Analyzer" />
+	<meta
+		property="og:description"
+		content="社員の離職リスクを機械学習モデルで予測するWebアプリケーションです。"
+	/>
+	<meta property="og:url" content="https://attrition-risk-analyzer-kensuke.vercel.app" />
+	<meta
+		property="og:image"
+		content="https://attrition-risk-analyzer-kensuke.vercel.app/og-image.png"
+	/>
+
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content="Attrition Risk Analyzer" />
+	<meta
+		name="twitter:description"
+		content="社員の離職リスクを機械学習モデルで予測するWebアプリケーションです。"
+	/>
+	<meta
+		name="twitter:image"
+		content="https://attrition-risk-analyzer-kensuke.vercel.app/og-image.png"
+	/>
+</svelte:head>
 
 <div class="min-h-screen bg-slate-50">
 	<header class="sticky top-0 z-50 border-b border-slate-200 bg-white/90 backdrop-blur">
